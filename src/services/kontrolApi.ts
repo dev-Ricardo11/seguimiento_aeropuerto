@@ -1,110 +1,41 @@
 import { Reserva } from '../components/ReservaCard';
 import { Notification } from '../components/NotificationSystem';
 
-// Simulación de datos para demostración
-const mockReservas: Reserva[] = [
-  {
-    id: '1',
-    numeroReserva: 'KTL-2025-001',
-    cliente: 'María García Rodríguez',
-    destino: 'Cancún, México',
-    fechaSalida: '2025-02-15',
-    fechaRegreso: '2025-02-22',
-    empresa: 'EVT',
-    pasajeros: 2,
-    estado: 'confirmada',
-    precio: 2800000,
-    tipoViaje: 'ida-vuelta'
-  },
-  {
-    id: '2',
-    numeroReserva: 'KTL-2025-002',
-    cliente: 'Carlos Mendoza Silva',
-    destino: 'París, Francia',
-    fechaSalida: '2025-02-20',
-    fechaRegreso: '2025-02-28',
-    empresa: 'GBT',
-    pasajeros: 4,
-    estado: 'en-curso',
-    precio: 4500000,
-    tipoViaje: 'ida-vuelta'
-  },
-  {
-    id: '3',
-    numeroReserva: 'KTL-2025-003',
-    cliente: 'Ana Lucia Herrera',
-    destino: 'Dubai, Emiratos Árabes',
-    fechaSalida: '2025-03-01',
-    fechaRegreso: '2025-03-10',
-    empresa: 'EVT',
-    pasajeros: 1,
-    estado: 'pendiente',
-    precio: 3200000,
-    tipoViaje: 'ida-vuelta'
-  },
-  {
-    id: '4',
-    numeroReserva: 'KTL-2025-004',
-    cliente: 'Roberto Jiménez López',
-    destino: 'Roma, Italia',
-    fechaSalida: '2025-02-10',
-    fechaRegreso: '2025-02-18',
-    empresa: 'EVT',
-    pasajeros: 3,
-    estado: 'completada',
-    precio: 3800000,
-    tipoViaje: 'ida-vuelta'
-  },
-  {
-    id: '5',
-    numeroReserva: 'KTL-2025-005',
-    cliente: 'Patricia Ruiz Morales',
-    destino: 'Nueva York, Estados Unidos',
-    fechaSalida: '2025-02-25',
-    fechaRegreso: '2025-03-05',
-    empresa: 'AMERICAN EXPRESS',
-    pasajeros: 2,
-    estado: 'confirmada',
-    precio: 2900000,
-    tipoViaje: 'ida-vuelta'
-  }
-];
+// Configuración de la API
+const API_BASE_URL = 'http://localhost:8000';
 
-const mockNotificaciones: Notification[] = [
-  {
-    id: '1',
-    tipo: 'info',
-    titulo: 'Nuevo viaje programado',
-    mensaje: 'El viaje KTL-2025-002 a París iniciará en 2 días. Verificar documentación.',
-    empresa: 'EVT',
-    timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    leida: false
-  },
-  {
-    id: '2',
-    tipo: 'warning',
-    titulo: 'Documentación pendiente',
-    mensaje: 'La reserva KTL-2025-003 requiere verificación de documentos del cliente.',
-    empresa: 'EVT',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    leida: false
-  },
-  {
-    id: '3',
-    tipo: 'success',
-    titulo: 'Viaje completado',
-    mensaje: 'El viaje KTL-2025-004 a Roma se completó exitosamente.',
-    empresa: 'AMERICAN EXPRESS',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    leida: true
-  }
-];
-
-//  API de KONTROL
+// API de KONTROL con PostgreSQL
 export class KontrolApiService {
   private static instance: KontrolApiService;
-  private reservas: Reserva[] = [...mockReservas];
-  private notificaciones: Notification[] = [...mockNotificaciones];
+  private notificacionesLocal: Notification[] = [
+    {
+      id: '1',
+      tipo: 'info',
+      titulo: 'Nuevo viaje programado',
+      mensaje: 'El viaje KTL-2025-002 a París iniciará en 2 días. Verificar documentación.',
+      empresa: 'EVT',
+      timestamp: new Date(Date.now() - 1000 * 60 * 30),
+      leida: false
+    },
+    {
+      id: '2',
+      tipo: 'warning',
+      titulo: 'Documentación pendiente',
+      mensaje: 'La reserva KTL-2025-003 requiere verificación de documentos del cliente.',
+      empresa: 'EVT',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+      leida: false
+    },
+    {
+      id: '3',
+      tipo: 'success',
+      titulo: 'Viaje completado',
+      mensaje: 'El viaje KTL-2025-004 a Roma se completó exitosamente.',
+      empresa: 'AMERICAN EXPRESS',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
+      leida: true
+    }
+  ];
 
   static getInstance(): KontrolApiService {
     if (!KontrolApiService.instance) {
@@ -113,29 +44,52 @@ export class KontrolApiService {
     return KontrolApiService.instance;
   }
 
-  // Simular delay de API real
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  // Método helper para realizar peticiones HTTP
+  private async fetchAPI(endpoint: string, options: RequestInit = {}): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error en la API: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
   }
 
+  // MÉTODOS PARA RESERVAS (conectados a PostgreSQL)
   async obtenerReservas(): Promise<Reserva[]> {
-    await this.delay(800); // Simular latencia de API
-    return [...this.reservas];
+    try {
+      const data = await this.fetchAPI('/reservas');
+      return data.reservas || [];
+    } catch (error) {
+      console.error('Error al obtener reservas:', error);
+      return [];
+    }
   }
 
   async obtenerReservaPorId(id: string): Promise<Reserva | null> {
-    await this.delay(300);
-    return this.reservas.find(r => r.id === id) || null;
+    try {
+      const data = await this.fetchAPI(`/reservas/${id}`);
+      return data.reserva || null;
+    } catch (error) {
+      console.error('Error al obtener reserva por ID:', error);
+      return null;
+    }
   }
 
   async buscarReservas(query: string): Promise<Reserva[]> {
-    await this.delay(500);
-    const queryLower = query.toLowerCase();
-    return this.reservas.filter(r => 
-      r.cliente.toLowerCase().includes(queryLower) ||
-      r.numeroReserva.toLowerCase().includes(queryLower) ||
-      r.destino.toLowerCase().includes(queryLower)
-    );
+    try {
+      const data = await this.fetchAPI(`/reservas?q=${encodeURIComponent(query)}`);
+      return data.reservas || [];
+    } catch (error) {
+      console.error('Error al buscar reservas:', error);
+      return [];
+    }
   }
 
   async filtrarReservas(filters: {
@@ -144,61 +98,89 @@ export class KontrolApiService {
     estado?: string;
     empresa?: string;
     destino?: string;
+    precio_total:string
+    id?:string;
     busqueda?: string;
   }): Promise<Reserva[]> {
-    await this.delay(600);
-    
-    let filtered = [...this.reservas];
+    try {
+      const params = new URLSearchParams();
+      
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) {
+          params.append(key, value);
+        }
+      });
 
-    if (filters.busqueda) {
-      const query = filters.busqueda.toLowerCase();
-      filtered = filtered.filter(r => 
-        r.cliente.toLowerCase().includes(query) ||
-        r.numeroReserva.toLowerCase().includes(query) ||
-        r.destino.toLowerCase().includes(query)
-      );
+      const queryString = params.toString();
+      const endpoint = `/reservas${queryString ? `?${queryString}` : ''}`;
+      
+      const data = await this.fetchAPI(endpoint);
+      return data.reservas || [];
+    } catch (error) {
+      console.error('Error al filtrar reservas:', error);
+      return [];
     }
-
-    if (filters.estado) {
-      filtered = filtered.filter(r => r.estado === filters.estado);
-    }
-
-    if (filters.destino) {
-      filtered = filtered.filter(r => 
-        r.destino.toLowerCase().includes(filters.destino!.toLowerCase())
-      );
-    }
-
-    if (filters.fechaDesde) {
-      filtered = filtered.filter(r => r.fechaSalida >= filters.fechaDesde!);
-    }
-
-    if (filters.fechaHasta) {
-      filtered = filtered.filter(r => r.fechaSalida <= filters.fechaHasta!);
-    }
-
-    return filtered;
   }
 
+  async crearReserva(reserva: Omit<Reserva, 'id'>): Promise<Reserva | null> {
+    try {
+      const data = await this.fetchAPI('/reservas', {
+        method: 'POST',
+        body: JSON.stringify(reserva),
+      });
+      return data.reserva || null;
+    } catch (error) {
+      console.error('Error al crear reserva:', error);
+      return null;
+    }
+  }
+
+  async actualizarReserva(id: string, reserva: Partial<Reserva>): Promise<Reserva | null> {
+    try {
+      const data = await this.fetchAPI(`/reservas/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(reserva),
+      });
+      return data.reserva || null;
+    } catch (error) {
+      console.error('Error al actualizar reserva:', error);
+      return null;
+    }
+  }
+
+  async eliminarReserva(id: string): Promise<boolean> {
+    try {
+      await this.fetchAPI(`/reservas/${id}`, {
+        method: 'DELETE',
+      });
+      return true;
+    } catch (error) {
+      console.error('Error al eliminar reserva:', error);
+      return false;
+    }
+  }
+
+  // MÉTODOS PARA NOTIFICACIONES (mantenidos locales por ahora)
   async obtenerNotificaciones(): Promise<Notification[]> {
-    await this.delay(400);
-    return [...this.notificaciones];
+    // Simular delay de API
+    await new Promise(resolve => setTimeout(resolve, 400));
+    return [...this.notificacionesLocal];
   }
 
   async marcarNotificacionComoLeida(id: string): Promise<void> {
-    await this.delay(200);
-    const notificacion = this.notificaciones.find(n => n.id === id);
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const notificacion = this.notificacionesLocal.find(n => n.id === id);
     if (notificacion) {
       notificacion.leida = true;
     }
   }
 
   async eliminarNotificacion(id: string): Promise<void> {
-    await this.delay(200);
-    this.notificaciones = this.notificaciones.filter(n => n.id !== id);
+    await new Promise(resolve => setTimeout(resolve, 200));
+    this.notificacionesLocal = this.notificacionesLocal.filter(n => n.id !== id);
   }
 
-  // Simular generación de nuevas notificaciones (para demostrar funcionalidad en tiempo real)
+  // Simular generación de nuevas notificaciones
   generarNotificacionAleatoria(): void {
     const tipos: Notification['tipo'][] = ['info', 'success', 'warning'];
     const titulos = {
@@ -207,7 +189,7 @@ export class KontrolApiService {
       warning: 'Atención requerida'
     };
     const mensajes = {
-      info: 'Se ha actualizado la información del vuelo.',
+      info: 'Se ha actualizado la información del viaje.',
       success: 'El proceso se completó correctamente.',
       warning: 'Se requiere verificación adicional.'
     };
@@ -223,6 +205,38 @@ export class KontrolApiService {
       leida: false
     };
 
-    this.notificaciones.unshift(nuevaNotificacion);
+    this.notificacionesLocal.unshift(nuevaNotificacion);
+  }
+
+  // MÉTODOS ADICIONALES PARA ESTADÍSTICAS
+  async obtenerEstadisticas(): Promise<{
+    totalReservas: number;
+    reservasActivas: number;
+    reservasCanceladas: number;
+    reservasCompletadas: number;
+    ingresosTotal: number;
+    totalPasajeros: number;
+  }> {
+    try {
+      const data = await this.fetchAPI('/reservas/estadisticas');
+      return {
+        totalReservas: data.totalReservas || 0,
+        reservasActivas: data.reservasActivas || 0,
+        reservasCanceladas: data.reservasCanceladas || 0,
+        reservasCompletadas: data.reservasCompletadas || 0,
+        ingresosTotal: data.ingresosTotal || 0,
+        totalPasajeros: data.totalPasajeros || 0
+      };
+    } catch (error) {
+      console.error('Error al obtener estadísticas:', error);
+      return {
+        totalReservas: 0,
+        reservasActivas: 0,
+        reservasCanceladas: 0,
+        reservasCompletadas: 0,
+        ingresosTotal: 0,
+        totalPasajeros: 0
+      };
+    }
   }
 }
