@@ -1,70 +1,17 @@
 import React from 'react';
-import { Calendar, MapPin, Users, Clock, CheckCircle, XCircle } from 'lucide-react';
-
-export interface Reserva {
-  id: string;
-  numeroReserva: string;
-  cliente: string;
-  email: string;
-  telefono: string;
-  fechaSalida: string;
-  fechaRegreso: string | null;
-  destino: string;
-  origen: string;
-  tipoViaje: string;
-  estado: string;
-  empresa: string;
-  precioTotal: number;
-  moneda: string;
-  notas: string | null;
-  fechaCreacion: string;
-  fechaActualizacion: string;
-}
-
+import { MapPin, User, Plane, Hash, Building2 } from 'lucide-react';
+import { TiquetesDocumentos, getGDSName, getGDSColor } from '../services/kontrolApi';
+ 
 interface ReservaCardProps {
-  reserva: Reserva;
+  tiquete: TiquetesDocumentos;
   onClick: () => void;
 }
-
-const ReservaCard: React.FC<ReservaCardProps> = ({ reserva, onClick }) => {
-  const getEstadoColor = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'pendiente':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'confirmada':
-      case 'activa':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'en-curso':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'completada':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'cancelada':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getEstadoIcon = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'pendiente':
-        return <Clock className="w-4 h-4" />;
-      case 'confirmada':
-      case 'activa':
-      case 'en-curso':
-      case 'completada':
-        return <CheckCircle className="w-4 h-4" />;
-      case 'cancelada':
-        return <XCircle className="w-4 h-4" />;
-      default:
-        return <Clock className="w-4 h-4" />;
-    }
-  };
-
-  const formatFecha = (fecha: string) => {
-    if (!fecha) return '';
+ 
+const ReservaCard: React.FC<ReservaCardProps> = ({ tiquete, onClick }) => {
+  const formatFecha = (fecha: string | null | undefined) => {
+    if (!fecha) return 'N/A';
     try {
-      return new Date(fecha).toLocaleDateString('es-ES', {
+      return new Date(fecha).toLocaleDateString('es-CO', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -73,58 +20,127 @@ const ReservaCard: React.FC<ReservaCardProps> = ({ reserva, onClick }) => {
       return fecha;
     }
   };
-
+ 
+  const getEstadoConfig = (estado: string | undefined) => {
+    if (estado === 'Procesado') {
+      return { texto: 'Procesado', color: 'bg-green-100 text-green-800 border-green-200' };
+    }
+    return { texto: 'Pendiente', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' };
+  };
+ 
+  const estadoConfig = getEstadoConfig(tiquete.id_estado);
+  const gdsName = getGDSName(tiquete.iden_gds ?? 0);
+  const gdsColor = getGDSColor(tiquete.iden_gds ?? 0);
+ 
   return (
-    <div 
+<div
       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer transform hover:scale-[1.02]"
       onClick={onClick}
-    >
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              #{reserva.numeroReserva}
-            </h3>
-            <p className="text-gray-600">{reserva.cliente}</p>
-            <p className="text-gray-600">{reserva.empresa}</p>
-          </div>
-          <div className={`px-3 py-1 rounded-full border text-sm font-medium flex items-center gap-1 ${getEstadoColor(reserva.estado)}`}>
-            {getEstadoIcon(reserva.estado)}
-            {reserva.estado}
-          </div>
-        </div>
-
+>
+<div className="p-6">
+<div className="flex justify-between items-start mb-4">
+<div>
+<div className="flex items-center gap-2 mb-2">
+<Hash className="w-4 h-4 text-gray-500" />
+<h3 className="text-lg font-semibold text-gray-900">
+                {tiquete.ds_records}
+</h3>
+</div>
+ 
+            <div className="flex items-center gap-2 text-gray-600">
+<User className="w-4 h-4 text-blue-500" />
+<p className="font-medium">
+                {tiquete.ds_paxname} {tiquete.ds_paxape}
+</p>
+</div>
+ 
+            {tiquete.telefono && (
+<p className="text-sm text-gray-500 mt-1">Tel: {tiquete.telefono}</p>
+            )}
+</div>
+ 
+          <div className="flex flex-col items-end gap-2">
+<div className={`px-3 py-1 rounded-full border text-sm font-medium ${estadoConfig.color}`}>
+              {estadoConfig.texto}
+</div>
+<div className={`px-3 py-1 rounded-full border text-xs font-medium ${gdsColor}`}>
+              {gdsName}
+</div>
+</div>
+</div>
+ 
         <div className="space-y-3 mb-4">
-          <div className="flex items-center text-gray-600">
-            <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-            <span className="text-sm">{reserva.origen} → {reserva.destino}</span>
-          </div>
-          
-          <div className="flex items-center text-gray-600">
-            <Calendar className="w-4 h-4 mr-2 text-blue-500" />
-            <span className="text-sm">
-              {formatFecha(reserva.fechaSalida)}
-              {reserva.fechaRegreso && ` - ${formatFecha(reserva.fechaRegreso)}`}
-            </span>
-          </div>
-          
-          <div className="flex items-center text-gray-600">
-            <Users className="w-4 h-4 mr-2 text-blue-500" />
-            <span className="text-sm">{reserva.tipoViaje}</span>
-          </div>
-        </div>
+          {tiquete.ds_itinerario && (
+<div className="flex items-center text-gray-600">
+<MapPin className="w-4 h-4 mr-2 text-blue-500" />
+<span className="text-sm font-medium">{tiquete.ds_itinerario}</span>
+</div>
+          )}
+ 
+          <div className="grid grid-cols-2 gap-4">
+            {tiquete.dt_salida && (
+<div className="flex items-center text-gray-600">
+<Plane className="w-4 h-4 mr-2 text-blue-500 transform rotate-45" />
+<div className="text-sm">
+<div className="font-medium">Salida</div>
+<div className="text-xs">{formatFecha(tiquete.dt_salida)}</div>
+                  {tiquete.dt_llegada && (
+<div className="text-xs text-gray-500">{formatFecha(tiquete.dt_llegada)}</div>
+                  )}
+</div>
+</div>
+            )}
+ 
+            {tiquete.aerolinea && (
+<div className="flex items-center text-gray-600">
+<Building2 className="w-4 h-4 mr-2 text-blue-500" />
+<div className="text-sm">
+<div className="font-medium">Aerolínea</div>
+<div className="text-xs">{tiquete.aerolinea}</div>
+</div>
+</div>
+            )}
+</div>
+</div>
+ 
+        {tiquete.nombre_tiqueteador && (
+<div className="mb-3 pb-3 border-b border-gray-100">
+<div className="flex items-center gap-2 text-xs text-gray-500">
+<User className="w-3 h-3" />
+<span>Tiqueteador: <span className="font-medium">{tiquete.nombre_tiqueteador}</span></span>
+</div>
+</div>
+        )}
+ 
+        {tiquete.id_asesor && (
+<div className="pt-4 border-t border-gray-100">
+<div className="flex items-center gap-2 text-xs text-gray-500">
+<User className="w-3 h-3" />
+<span>Asesor: <span className="font-medium">{tiquete.id_asesor}</span></span>
+              {tiquete.id_hora && (
+<span className="ml-2">Hora: {tiquete.id_hora}</span>
+              )}
+</div>
+</div>
+        )}
 
-        <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-          <span className="text-2xl font-bold text-gray-900">
-            {(reserva.precioTotal || 0).toLocaleString()} {reserva.moneda || 'USD'}
-          </span>
-          <span className="text-sm text-gray-500">
-            {reserva.email}
-          </span>
-        </div>
-      </div>
-    </div>
+        
+  {tiquete.id_atencion && (
+  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+    <span className="text-sm text-gray-600">Atención:</span>
+    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+      tiquete.id_atencion === 'Presencial' 
+        ? 'bg-cyan-500 text-white'
+        : 'bg-pink-500 text-white'
+    }`}>
+      {tiquete.id_atencion}
+    </span>
+  </div>
+)}
+
+</div>
+</div>
   );
 };
-
+ 
 export default ReservaCard;

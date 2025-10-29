@@ -48,7 +48,8 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   };
 
   return (
-    <div className="relative">
+  <div className="relative flex items-center gap-2">
+      {/* Botón de notificaciones */}
       <button
         onClick={() => setShowDropdown(!showDropdown)}
         className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
@@ -60,6 +61,26 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
           </span>
         )}
       </button>
+
+      
+      <button
+        onClick={() => window.open('http://localhost:8501', '_blank')}
+        className="flex items-center gap-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+      >
+        <Info className="w-5 h-5" />
+        <span className="text-sm font-medium">Gestión Aeropuero</span>
+      </button>
+
+      {/* Dropdown de notificaciones */}
+      {showDropdown && (
+        <div className="absolute right-0 top-12 w-96 max-h-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+          ...
+        </div>
+      )}
+  
+      
+          
+           
 
       {showDropdown && (
         <div className="absolute right-0 top-12 w-96 max-h-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">

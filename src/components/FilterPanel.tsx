@@ -78,23 +78,24 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onR
             onChange={(e) => handleInputChange('estado', e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           >
-            <option value="">Todos los estados</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="confirmada">Confirmada</option>
-            <option value="en-curso">En curso</option>
-            <option value="completada">Completada</option>
-            <option value="cancelada">Cancelada</option>
+            <option value="">Trayectos</option>
+            <option value="pendiente">Vuelos - Ida</option>
+            <option value="completada">Vuelos - Devuelta </option>
+            
           </select>
         </div>
 
         <div>
-          <input
-            type="text"
-            placeholder="Destino"
-            value={filters.destino}
-            onChange={(e) => handleInputChange('destino', e.target.value)}
+          <select
+            value={filters.estado}
+            onChange={(e) => handleInputChange('estado', e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-          />
+          >
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="completada">Completada</option>
+            
+          </select>
         </div>
       </div>
     </div>
