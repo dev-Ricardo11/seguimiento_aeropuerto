@@ -1,0 +1,80 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.8 Chrome/140.0.7339.240 Electron/38.4.0 Safari/537.36" version="28.2.8">
+  <diagram name="Página-1" id="SP4Y5W-Kw2ZZrFhiynAJ">
+    <mxGraphModel dx="1646" dy="1156" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="EXg6h7F06PKj809YKT30-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.15;exitY=0.95;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-1" target="EXg6h7F06PKj809YKT30-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.85;exitY=0.95;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="289.9999999999998" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-1" value="ZeusAgencia" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="130" y="-100" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-2" target="EXg6h7F06PKj809YKT30-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-2" target="EXg6h7F06PKj809YKT30-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-2" target="EXg6h7F06PKj809YKT30-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-2" value="TiquetesDocumentos" style="swimlane;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="120" width="210" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-7" value="&lt;span data-teams=&quot;true&quot;&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;&amp;nbsp;ds_paxname&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  ds_paxprefix&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  ds_paxape&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  dt_salida&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  dt_llegada&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  id_documento&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  ds_itinerario&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  ds_records&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;  ds_PNR&lt;/span&gt;&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="EXg6h7F06PKj809YKT30-2">
+          <mxGeometry x="20" y="30" width="150" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.15;exitY=0.95;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-3" target="EXg6h7F06PKj809YKT30-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.85;exitY=0.95;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-3" value="Aeropuerto" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="-105" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-4" target="EXg6h7F06PKj809YKT30-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-4" target="EXg6h7F06PKj809YKT30-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-4" value="ReservasGDS" style="swimlane;" vertex="1" parent="1">
+          <mxGeometry x="190" y="130" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-10" value="&lt;span data-teams=&quot;true&quot;&gt;&lt;p&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;iden_gds&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;cd_codigo&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: inherit;&quot;&gt;cd_sucursal&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="EXg6h7F06PKj809YKT30-4">
+          <mxGeometry x="50" y="30" width="90" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-5" value="VueloREG" style="swimlane;" vertex="1" parent="1">
+          <mxGeometry x="840" y="130" width="200" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-9" value="&lt;span data-teams=&quot;true&quot;&gt;ds_paxname&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_paxprefix&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_paxape&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;dt_salida&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;dt_fechareg&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;iden_gds&lt;/span&gt;&lt;br&gt;&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_documento&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_itinerario&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_records&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_PNR&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;cd_sucursal&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_asesor&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_observacion&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_estado&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_silla&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_cuenta&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_hora&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_atencion&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="EXg6h7F06PKj809YKT30-5">
+          <mxGeometry x="30" y="30" width="90" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-6" value="VueloIDA" style="swimlane;" vertex="1" parent="1">
+          <mxGeometry x="520" y="130" width="200" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-8" value="&lt;span data-teams=&quot;true&quot;&gt;ds_paxname&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_paxprefix&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_paxape&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;dt_salida&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;dt_fechareg&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;iden_gds&lt;/span&gt;&lt;br&gt;&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_documento&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_itinerario&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_records&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;ds_PNR&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;cd_sucursal&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_asesor&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_observacion&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_estado&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_silla&lt;br&gt;&lt;span data-teams=&quot;true&quot;&gt;id_cuenta&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_hora&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;span data-teams=&quot;true&quot;&gt;id_atencion&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="170" width="90" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-22" value="JOB" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="-190" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=0.611;entryY=-0.017;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-22" target="EXg6h7F06PKj809YKT30-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EXg6h7F06PKj809YKT30-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.85;exitY=0.05;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.049;entryY=0.088;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="EXg6h7F06PKj809YKT30-1" target="EXg6h7F06PKj809YKT30-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

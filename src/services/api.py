@@ -104,9 +104,6 @@ def get_db_connection():
         if conn:
             conn.close()
 
-# ============================================
-# FUNCIONES AUXILIARES
-# ============================================
 
 def extraer_aerolinea_pnr(ds_pnr: str) -> Optional[str]:
     if not ds_pnr:

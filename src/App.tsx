@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { Plane, RefreshCw, HelpCircle, LogOut } from 'lucide-react';
 import Login from './components/login';
 import ReservaCard from './components/ReservaCard';
@@ -25,6 +25,8 @@ function App() {
     destino: ''
   });
   const [selectedTiquete, setSelectedTiquete] = useState<TiquetesDocumentos | null>(null);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  
 
   useEffect(() => {
     const savedUser = localStorage.getItem('kontrol_user');
@@ -155,6 +157,228 @@ function App() {
     console.log('Eliminar notificación:', id);
   };
 
+      interface Pasajero {
+        ds_records: string;
+        cd_tiquete: string;
+        ds_paxname: string;
+        nombre_tiqueteador: string;
+        ds_itinerario: string;
+        dt_salida: string;
+        tipo_reserva: string;
+        id_asesor: string;
+        id_observacion: string;
+        id_silla: string;
+        id_cuenta: string;
+      }
+
+      interface AdicionarPasajeroModalProps {
+        isOpen: boolean;
+        onClose: () => void;
+        onSave: (nuevoPasajero: Pasajero) => void;
+      }
+
+    const AdicionarPasajeroModal: React.FC<AdicionarPasajeroModalProps> = ({
+      isOpen,
+      onClose,
+      onSave,
+    }) => {
+      const [formData, setFormData] = useState<Pasajero>({
+        ds_records: "",
+        cd_tiquete: "",
+        ds_paxname: "",
+        nombre_tiqueteador: "",
+        ds_itinerario: "",
+        dt_salida: "",
+        tipo_reserva: "",
+        id_asesor: "",
+        id_observacion: "",
+        id_silla: "",
+        id_cuenta: "",
+      });
+
+      const asesores = [
+        "Jhon Alexander Silva",
+        "Wendy Cantillo Maury",
+        "Diana Milena Lozano",
+        "Lina Paola Lopez",
+      ];
+
+      const handleChange = (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+      ) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+      const handleSave = () => {
+        onSave(formData);
+        onClose();
+      };
+
+      if (!isOpen) return null;
+
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white rounded-2xl shadow-lg w-[600px] p-6 relative">
+            <button
+              className="absolute top-3 right-4 text-gray-500 hover:text-black"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+
+            <h2 className="text-xl font-semibold mb-4">
+              🧾 Adicionar Nuevo Pasajero
+            </h2>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">Record</label>
+                <input
+                  name="ds_records"
+                  value={formData.ds_records}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Código Tiquete</label>
+                <input
+                  name="cd_tiquete"
+                  value={formData.cd_tiquete}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="text-sm font-medium">Nombre del Pasajero</label>
+                <input
+                  name="ds_paxname"
+                  value={formData.ds_paxname}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="text-sm font-medium">Nombre del Tiqueteador</label>
+                <input
+                  name="nombre_tiqueteador"
+                  value={formData.nombre_tiqueteador}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Itinerario</label>
+                <input
+                  name="ds_itinerario"
+                  value={formData.ds_itinerario}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Fecha de Salida</label>
+                <input
+                  type="datetime-local"
+                  name="dt_salida"
+                  value={formData.dt_salida}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Tipo de Reserva</label>
+                <input
+                  name="tipo_reserva"
+                  value={formData.tipo_reserva}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                />
+              </div>
+
+              {/* 🔽 Select de Asesor */}
+              <div>
+                <label className="text-sm font-medium">Asesor</label>
+                <select
+                  name="id_asesor"
+                  value={formData.id_asesor}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                >
+                  <option value="">Seleccionar asesor...</option>
+                  {asesores.map((asesor) => (
+                    <option key={asesor} value={asesor}>
+                      {asesor}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Silla</label>
+                <input
+                  name="id_silla"
+                  value={formData.id_silla}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                  placeholder="Ingrese número de silla"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Cuenta</label>
+                <input
+                  name="id_cuenta"
+                  value={formData.id_cuenta}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                  placeholder="Ingrese cuenta"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="text-sm font-medium">Observación</label>
+                <textarea
+                  name="id_observacion"
+                  value={formData.id_observacion}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-2 py-1"
+                  rows={2}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-5">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-300 rounded-lg mr-2 hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+
+
+
+   
+
   const exportToExcel = () => {
     if (filteredTiquetes.length === 0) {
       alert("No hay datos para exportar");
@@ -280,10 +504,26 @@ function App() {
 
             <button
               onClick={exportToExcel}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition-all"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition-all"
             >
               Exportar Excel
             </button>
+            
+           <button
+              onClick={() => setOpenModal(true)}
+              className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"
+            >
+              Adicionar Pasajero
+            </button>
+
+            <AdicionarPasajeroModal
+              isOpen={openModal}
+              onClose={() => setOpenModal(false)}
+              onSave={(nuevoPasajero) => console.log("Nuevo pasajero agregado:", nuevoPasajero)}
+/>
+
+
+
           </div>
         </div>
 
