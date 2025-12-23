@@ -8,6 +8,7 @@ export interface FilterState {
   empresa: string;
   estado: string;
   destino: string;
+  tipo_vuelo: string; // Added field
 }
 
 interface FilterPanelProps {
@@ -74,14 +75,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onR
 
         <div>
           <select
-            value={filters.estado}
-            onChange={(e) => handleInputChange('estado', e.target.value)}
+            value={filters.tipo_vuelo || ""}
+            onChange={(e) => handleInputChange('tipo_vuelo', e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           >
-            <option value="">Trayectos</option>
-            <option value="pendiente">Vuelos - Ida</option>
-            <option value="completada">Vuelos - Devuelta </option>
-            
+            <option value="">Trayectos (Todos)</option>
+            <option value="IDA">Vuelos - Ida</option>
+            <option value="REG">Vuelos - Devuelta</option>
           </select>
         </div>
 
@@ -92,9 +92,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onR
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           >
             <option value="">Todos los estados</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="completada">Completada</option>
-            
+            <option value="Pendiente">Pendiente</option>
+            <option value="Procesado">Procesado</option>
           </select>
         </div>
       </div>
