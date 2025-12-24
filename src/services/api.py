@@ -297,7 +297,7 @@ def login(credentials: dict):
             SELECT id, email, nombre_completo, rol
             FROM dbo.usuarios
             WHERE email = ? 
-            AND [contraseña] = HASHBYTES('SHA2_256', ?)
+            AND [contraseña] = HASHBYTES('SHA2_256', CAST(? AS VARCHAR))
         """, (usuario, password))
 
         user = cursor.fetchone()

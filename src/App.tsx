@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import { Plane, RefreshCw, HelpCircle, LogOut } from 'lucide-react';
+import { Plane, RefreshCw, HelpCircle, LogOut, Info } from 'lucide-react';
 import Login from './components/login';
 import ReservaCard from './components/ReservaCard';
 import NotificationSystem, { Notification } from './components/NotificationSystem';
@@ -12,6 +12,7 @@ import { saveAs } from "file-saver";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [tiquetes, setTiquetes] = useState<TiquetesDocumentos[]>([]);
   const [filteredTiquetes, setFilteredTiquetes] = useState<TiquetesDocumentos[]>([]);
   const [notifications] = useState<Notification[]>([]);
@@ -31,9 +32,11 @@ function App() {
 
   useEffect(() => {
     const savedUser = localStorage.getItem('kontrol_user');
+    const savedRole = localStorage.getItem('kontrol_role');
     if (savedUser) {
       setIsAuthenticated(true);
       setCurrentUser(savedUser);
+      setUserRole(savedRole || '');
     } else {
       setLoading(false);
     }
@@ -49,16 +52,20 @@ function App() {
     aplicarFiltros();
   }, [tiquetes, filters]);
 
-  const handleLogin = (correo: string) => {
+  const handleLogin = (correo: string, role: string) => {
     setIsAuthenticated(true);
     setCurrentUser(correo);
+    setUserRole(role);
     localStorage.setItem('kontrol_user', correo);
+    localStorage.setItem('kontrol_role', role);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setCurrentUser('');
+    setUserRole('');
     localStorage.removeItem('kontrol_user');
+    localStorage.removeItem('kontrol_role');
     setTiquetes([]);
     setFilteredTiquetes([]);
   };
@@ -467,6 +474,16 @@ function App() {
                 <RefreshCw className="w-5 h-5" />
               </button>
 
+              {userRole.toLowerCase() === 'administrador' && (
+                <button
+                  onClick={() => window.open('http://localhost:8501', '_blank')}
+                  className="flex items-center gap-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  <Info className="w-5 h-5" />
+                  <span className="text-sm font-medium">Gestión Aeropuerto</span>
+                </button>
+              )}
+
               <NotificationSystem
                 notifications={notifications}
                 onMarkAsRead={handleMarkNotificationAsRead}
@@ -491,7 +508,7 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <StatsCards tiquetes={tiquetes} />
+        {userRole.toLowerCase() === 'administrador' && <StatsCards tiquetes={tiquetes} />}
 
         <FilterPanel
           filters={filters}
@@ -509,19 +526,23 @@ function App() {
               Última actualización: {new Date().toLocaleTimeString()}
             </p>
 
-            <button
-              onClick={exportToExcel}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition-all"
-            >
-              Exportar Excel
-            </button>
+            {userRole.toLowerCase() === 'administrador' && (
+              <>
+                <button
+                  onClick={exportToExcel}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition-all"
+                >
+                  Exportar Excel
+                </button>
 
-            <button
-              onClick={() => setOpenModal(true)}
-              className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"
-            >
-              Adicionar Pasajero
-            </button>
+                <button
+                  onClick={() => setOpenModal(true)}
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"
+                >
+                  Adicionar Pasajero
+                </button>
+              </>
+            )}
 
             <AdicionarPasajeroModal
               isOpen={openModal}
@@ -638,6 +659,7 @@ function App() {
                       <span className="text-sm text-gray-600">Atención:</span>
                       <button
                         onClick={async (e) => {
+                          if (userRole.toLowerCase() !== 'administrador') return;
                           e.preventDefault(); // Evitar cualquier comportamiento por defecto
 
                           if (!selectedTiquete) return;
@@ -680,12 +702,13 @@ function App() {
                             alert(`Error al cambiar tipo de atención: ${error instanceof Error ? error.message : 'Error desconocido'}`);
                           }
                         }}
+                        disabled={userRole.toLowerCase() !== 'administrador'}
                         className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${(selectedTiquete.id_atencion || 'Presencial') === 'Presencial'
-                          ? 'bg-cyan-500 text-white hover:bg-cyan-600'
-                          : 'bg-pink-500 text-white hover:bg-pink-600'
+                            ? 'bg-cyan-500 text-white ' + (userRole.toLowerCase() === 'administrador' ? 'hover:bg-cyan-600' : 'opacity-80')
+                            : 'bg-pink-500 text-white ' + (userRole.toLowerCase() === 'administrador' ? 'hover:bg-pink-600' : 'opacity-80')
                           }`}
                       >
-                        {selectedTiquete.id_atencion || 'Presencial'} ⇄
+                        {selectedTiquete.id_atencion || 'Presencial'} {userRole.toLowerCase() === 'administrador' ? '⇄' : ''}
                       </button>
                     </div>
                   </div>
@@ -730,6 +753,7 @@ function App() {
                       <select
                         value={selectedTiquete.id_asesor || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_asesor: e.target.value })}
+                        disabled={userRole.toLowerCase() !== 'administrador'}
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Seleccionar asesor...</option>
@@ -745,6 +769,7 @@ function App() {
                       <textarea
                         value={selectedTiquete.id_observacion || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_observacion: e.target.value })}
+                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese observación"
                         rows={3}
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -759,6 +784,7 @@ function App() {
                         type="text"
                         value={selectedTiquete.id_silla || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_silla: e.target.value })}
+                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese número de silla"
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -770,6 +796,7 @@ function App() {
                         type="text"
                         value={selectedTiquete.id_cuenta || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_cuenta: e.target.value })}
+                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese cuenta"
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -814,7 +841,7 @@ function App() {
               </div>
 
               <div className="flex gap-4 mt-6 pt-6 border-t border-gray-100">
-                {selectedTiquete.id_estado === 'Pendiente' && (
+                {selectedTiquete.id_estado === 'Pendiente' && userRole.toLowerCase() === 'administrador' && (
                   <button
                     onClick={async () => {
                       if (!selectedTiquete.id_asesor?.trim()) {

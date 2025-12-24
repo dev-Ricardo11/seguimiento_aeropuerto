@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plane, Lock, Mail, Eye, EyeOff } from 'lucide-react';
 
 interface LoginProps {
-  onLogin: (correo: string) => void;
+  onLogin: (correo: string, role: string) => void;
 }
 
 const login: React.FC<LoginProps> = ({ onLogin }) => {
@@ -14,35 +14,37 @@ const login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleSubmit = async () => {
     setError('');
-    
+
     if (!correo || !password) {
       setError('Por favor complete todos los campos');
       return;
     }
 
     setLoading(true);
-    
+
     try {
       console.log('Enviando login:', { correo, password });
-      
+
       const response = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          correo: correo.trim(), 
-          password: password.trim() 
+        body: JSON.stringify({
+          correo: correo.trim(),
+          password: password.trim()
         }),
       });
 
       console.log('Response status:', response.status);
-      
+
       const data = await response.json();
       console.log('Response data:', data);
 
       if (response.ok && data.success) {
-        onLogin(correo);
+        // Enviar correo y rol
+        const userRole = data.user?.rol || 'usuario';
+        onLogin(correo, userRole);
       } else {
         setError(data.detail || 'Error en el inicio de sesión');
       }

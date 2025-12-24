@@ -48,7 +48,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   };
 
   return (
-  <div className="relative flex items-center gap-2">
+    <div className="relative flex items-center gap-2">
       {/* Botón de notificaciones */}
       <button
         onClick={() => setShowDropdown(!showDropdown)}
@@ -62,25 +62,16 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
         )}
       </button>
 
-      
-      <button
-        onClick={() => window.open('http://localhost:8501', '_blank')}
-        className="flex items-center gap-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-      >
-        <Info className="w-5 h-5" />
-        <span className="text-sm font-medium">Gestión Aeropuero</span>
-      </button>
-
       {/* Dropdown de notificaciones */}
       {showDropdown && (
         <div className="absolute right-0 top-12 w-96 max-h-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
           ...
         </div>
       )}
-  
-      
-          
-           
+
+
+
+
 
       {showDropdown && (
         <div className="absolute right-0 top-12 w-96 max-h-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
@@ -88,7 +79,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
             <h3 className="font-semibold text-gray-900">Notificaciones</h3>
             <p className="text-sm text-gray-600">{unreadCount} sin leer</p>
           </div>
-          
+
           <div className="max-h-64 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="p-6 text-center text-gray-500">
@@ -99,9 +90,8 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 border-l-4 ${getNotificationBgColor(notification.tipo)} ${
-                    !notification.leida ? 'bg-opacity-100' : 'bg-opacity-50'
-                  } hover:bg-opacity-80 transition-colors duration-200`}
+                  className={`p-4 border-l-4 ${getNotificationBgColor(notification.tipo)} ${!notification.leida ? 'bg-opacity-100' : 'bg-opacity-50'
+                    } hover:bg-opacity-80 transition-colors duration-200`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
