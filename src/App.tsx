@@ -219,7 +219,7 @@ function App() {
 
     const handleSave = () => {
       onSave(formData);
-      onClose();
+      // onClose(); // Let parent close after async save or handle loading
     };
 
     if (!isOpen) return null;
@@ -526,7 +526,19 @@ function App() {
             <AdicionarPasajeroModal
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
-              onSave={(nuevoPasajero) => console.log("Nuevo pasajero agregado:", nuevoPasajero)}
+              onSave={async (nuevoPasajero) => {
+                console.log("Nuevo pasajero agregado:", nuevoPasajero);
+                try {
+                  const currentFilter = filters.tipo_vuelo || 'IDA'; // Default to IDA if no filter
+                  await kontrolApi.createTiquete(nuevoPasajero, currentFilter);
+                  setOpenModal(false);
+                  alert("Pasajero creado exitosamente");
+                  cargarDatosIniciales(); // Reload list
+                } catch (error) {
+                  console.error("Error creating ticket:", error);
+                  alert("Error al crear el pasajero. Verifique los datos e intente nuevamente.");
+                }
+              }}
             />
 
 

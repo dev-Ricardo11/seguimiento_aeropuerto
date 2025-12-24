@@ -408,6 +408,93 @@ def get_reservas(fechas: Optional[Fechas] = None):
         )
 
 
+
+class TiqueteCreate(BaseModel):
+    ds_records: str
+    cd_tiquete: str
+    ds_paxname: str
+    nombre_tiqueteador: Optional[str] = None
+    ds_itinerario: Optional[str] = None
+    dt_salida: Optional[str] = None
+    tipo_reserva: Optional[str] = None
+    id_asesor: Optional[str] = None
+    id_observacion: Optional[str] = None
+    id_silla: Optional[str] = None
+    id_cuenta: Optional[str] = None
+    tipo_vuelo: Optional[str] = "IDA"  # Default to IDA if not specified
+
+@app.post("/TiquetesDocumentos")
+def create_tiquete(tiquete: TiqueteCreate):
+    try:
+        if not tiquete.cd_tiquete:
+            raise HTTPException(status_code=400, detail="El código de tiquete es obligatorio")
+
+        target_table = "VueloIDA"
+        if tiquete.tipo_vuelo and (tiquete.tipo_vuelo.upper() == 'REG' or 'DEVUELTA' in tiquete.tipo_vuelo.upper()):
+            target_table = "VueloREG"
+
+        # Separate Name Logic if needed, for now using ds_paxname for all
+        # columns in DB: ds_paxname, ds_paxprefix, ds_paxape
+        # We will split simply by space for now or put all in ds_paxname
+        
+        col_date = "dt_salida" if target_table == "VueloIDA" else "dt_llegada"
+        
+        # Prepare date
+        date_val = None
+        if tiquete.dt_salida:
+             # Basic normalization if needed, or pass as string if DB accepts it
+             date_val = tiquete.dt_salida
+
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            
+            # Check if exists
+            cursor.execute(f"SELECT id_documento FROM dbo.{target_table} WHERE id_documento = ?", (tiquete.cd_tiquete,))
+            if cursor.fetchone():
+                raise HTTPException(status_code=400, detail=f"El tiquete {tiquete.cd_tiquete} ya existe en {target_table}")
+
+            query = f"""
+                INSERT INTO dbo.{target_table} (
+                    id_documento,
+                    ds_records,
+                    ds_paxname,
+                    id_tiqueteador,
+                    ds_itinerario,
+                    {col_date},
+                    id_asesor,
+                    id_observacion,
+                    id_silla,
+                    id_cuenta,
+                    id_estado,
+                    id_hora,
+                    id_atencion
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, 'Presencial')
+            """
+            
+            cursor.execute(query, (
+                tiquete.cd_tiquete,
+                tiquete.ds_records,
+                tiquete.ds_paxname,
+                tiquete.nombre_tiqueteador,
+                tiquete.ds_itinerario,
+                date_val,
+                tiquete.id_asesor,
+                tiquete.id_observacion,
+                tiquete.id_silla,
+                tiquete.id_cuenta,
+                datetime.now().strftime("%H:%M:%S")
+            ))
+            conn.commit()
+            
+            return {"success": True, "message": f"Tiquete creado en {target_table}", "cd_tiquete": tiquete.cd_tiquete}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error creando tiquete: {str(e)}")
+
 @app.get("/TiquetesDocumentos")
 def get_tiquetes_documentos(
     limit: int = Query(1000, le=1000),

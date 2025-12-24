@@ -113,6 +113,21 @@ class KontrolApi {
     return this.handleResponse<TiquetesDocumentosResponse>(response);
   }
 
+  async createTiquete(tiquete: Partial<TiquetesDocumentos>, tipo_vuelo: string): Promise<{ success: boolean; message: string; cd_tiquete: string }> {
+    const body = {
+      ...tiquete,
+      tipo_vuelo: tipo_vuelo // Ensure this is passed to backend decision logic
+    };
+
+    const response = await fetch(`${this.baseURL}/TiquetesDocumentos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    return this.handleResponse(response);
+  }
+
   async updateTiqueteAtencion(
     cd_tiquete: string,
     id_atencion: string
