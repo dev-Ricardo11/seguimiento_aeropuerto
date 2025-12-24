@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+Simulating creation for Prueba2...
+Executing query with params: ('Prueba2', 'Prueba2', 'Ricardo Ramirez', 'Prueba2', 'BOG - MDE', '2025-12-27T07:52', 'Wendy Cantillo Maury', 'Prueba2', 'Prueba 2', 'Prueba 2', '07:55:26')
+--- TRACEBACK ---
+--- ERROR: ('23000', "[23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot insert the value NULL into column 'ds_paxprefix', table 'Reservas_EVT.dbo.VueloIDA'; column does not allow nulls. INSERT fails. (515) (SQLExecDirectW); [23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The statement has been terminated. (3621)") ---
+  File "D:\seguimiento_aeropuerto\simulate_creation.py", line 95, in <module>
+    cursor.execute(query, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+pyodbc.IntegrityError: ('23000', "[23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot insert the value NULL into column 'ds_paxprefix', table 'Reservas_EVT.dbo.VueloIDA'; column does not allow nulls. INSERT fails. (515) (SQLExecDirectW); [23000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The statement has been terminated. (3621)")

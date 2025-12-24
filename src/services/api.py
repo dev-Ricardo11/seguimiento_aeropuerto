@@ -439,11 +439,17 @@ def create_tiquete(tiquete: TiqueteCreate):
         
         col_date = "dt_salida" if target_table == "VueloIDA" else "dt_llegada"
         
-        # Prepare date
+        # Prepare date - normalize for SQL Server (no 'T' separator)
         date_val = None
         if tiquete.dt_salida:
-             # Basic normalization if needed, or pass as string if DB accepts it
-             date_val = tiquete.dt_salida
+             try:
+                 # Ensure we have YYYY-MM-DD HH:MM:SS format
+                 dt_temp = tiquete.dt_salida.replace('T', ' ')
+                 if len(dt_temp) == 16: # handles YYYY-MM-DD HH:MM
+                     dt_temp += ":00"
+                 date_val = dt_temp
+             except:
+                 date_val = tiquete.dt_salida
 
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -453,11 +459,19 @@ def create_tiquete(tiquete: TiqueteCreate):
             if cursor.fetchone():
                 raise HTTPException(status_code=400, detail=f"El tiquete {tiquete.cd_tiquete} ya existe en {target_table}")
 
+            # Mandatory columns for manual entries:
+            # ds_paxprefix, ds_paxape, iden_gds, ds_PNR, cd_sucursal
+            
             query = f"""
                 INSERT INTO dbo.{target_table} (
                     id_documento,
                     ds_records,
                     ds_paxname,
+                    ds_paxprefix,
+                    ds_paxape,
+                    iden_gds,
+                    ds_PNR,
+                    cd_sucursal,
                     id_tiqueteador,
                     ds_itinerario,
                     {col_date},
@@ -468,13 +482,18 @@ def create_tiquete(tiquete: TiqueteCreate):
                     id_estado,
                     id_hora,
                     id_atencion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, 'Presencial')
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, 'Presencial')
             """
             
             cursor.execute(query, (
                 tiquete.cd_tiquete,
                 tiquete.ds_records,
                 tiquete.ds_paxname,
+                '', # ds_paxprefix
+                '', # ds_paxape
+                '8', # iden_gds (KONTROL para manual)
+                '', # ds_PNR
+                'MANUAL', # cd_sucursal
                 tiquete.nombre_tiqueteador,
                 tiquete.ds_itinerario,
                 date_val,
