@@ -322,90 +322,91 @@ def login(credentials: dict):
 @app.post("/ReservasGDS")
 def get_reservas(fechas: Optional[Fechas] = None):
     """
-    Obtiene reservas GDS con o sin filtro de fechas.
-    Si no se envían fechas, retorna todas las reservas (limitado a 10000).
+    Obtiene registros de VueloIDA y VueloREG para el dashboard administrativo.
     """
     try:
-        usar_filtro_fechas = fechas is not None and hasattr(fechas, 'fecha_inicio')
- 
-        if usar_filtro_fechas:
-            print(f"📅 Consultando reservas desde {fechas.fecha_inicio} hasta {fechas.fecha_fin}")
-        else:
-            print("📅 Consultando todas las reservas (sin filtro de fechas)")
- 
+        usar_filtro_fechas = fechas is not None and fechas.fecha_inicio and fechas.fecha_fin
+        
         sucursales = {
             "I0W3": "Locales BOG",
             "NT3H": "NEPS",
             "MZ4C": "GRUPOS",
             "7C0A": "VACACIONAL",
             "7OMF": "Sucursal BAQ",
-            "W5AA": "Sucursal CLO"
+            "W5AA": "Sucursal CLO",
+            "MANUAL": "REGISTRO MANUAL"
         }
- 
-        codigos_validos = "', '".join(sucursales.keys())
-        query = f"""
-            SELECT
+
+        # Query base para IDA
+        query_ida = """
+            SELECT 
                 cd_sucursal,
-                cd_codigo,
-                cd_tiqueteador,
-                ds_observaciones
-            FROM dbo.ReservasGDS WITH (NOLOCK)
-            WHERE cd_sucursal IN ('{codigos_validos}')
-            ORDER BY cd_sucursal
+                id_documento as cd_codigo,
+                id_tiqueteador as cd_tiqueteador,
+                id_observacion as ds_observaciones,
+                id_cuenta,
+                id_hora,
+                dt_salida as fecha_vuelo
+            FROM dbo.VueloIDA
         """
- 
-        print(f"🔍 Query ejecutado: {query}")
- 
+        
+        # Query base para REG
+        query_reg = """
+            SELECT 
+                cd_sucursal,
+                id_documento as cd_codigo,
+                id_tiqueteador as cd_tiqueteador,
+                id_observacion as ds_observaciones,
+                id_cuenta,
+                id_hora,
+                dt_llegada as fecha_vuelo
+            FROM dbo.VueloREG
+        """
+
+        full_query = f"""
+            SELECT * FROM (
+                ({query_ida})
+                UNION ALL
+                ({query_reg})
+            ) as Combined
+        """
+
+        if usar_filtro_fechas:
+            full_query += f" WHERE fecha_vuelo >= '{fechas.fecha_inicio}' AND fecha_vuelo <= '{fechas.fecha_fin} 23:59:59'"
+
         with get_db_connection() as conn:
             cursor = conn.cursor()
- 
-            try:
-                cursor.execute(query)
-                rows = cursor.fetchall()
-                columns = [col[0] for col in cursor.description]
-                print(f"📊 Columnas encontradas: {columns}")
-                print(f"📊 Registros encontrados: {len(rows)}")
-            finally:
-                cursor.close()
- 
-        if not rows:
-            print("⚠️ No se encontraron registros")
-            return {"success": True, "data": [], "total": 0}
- 
+            cursor.execute(full_query)
+            rows = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+
         result = []
         for row in rows:
             record = dict(zip(columns, row))
- 
-            cd = record.get("cd_sucursal", "DESCONOCIDO")
-            if isinstance(cd, str):
-                cd = cd.strip().upper()
- 
-            nombre_sucursal = sucursales.get(cd, "DESCONOCIDO")
- 
+            
+            # Map Sucursal
+            cd = str(record.get("cd_sucursal", "")).strip().upper()
+            nombre_sucursal = sucursales.get(cd, "OTRAS SUCURSALES")
             record["CodigoSucursal"] = cd
             record["NombreSucursal"] = nombre_sucursal
             record["Sucursal"] = f"{cd} - {nombre_sucursal}"
- 
+            
+            # Map id_cuenta_str for the chart
+            record["id_cuenta_str"] = str(record.get("id_cuenta") or "SIN CUENTA")
+            
             result.append(record)
- 
-        print(f"✅ Respuesta preparada con {len(result)} registros")
-        print(f"✅ Muestra de datos: {result[:3] if len(result) >= 3 else result}")
- 
+
         return {
             "success": True,
             "data": result,
             "total": len(result),
             "filtrado_por_fechas": usar_filtro_fechas
         }
- 
+
     except Exception as e:
         import traceback
-        error_trace = traceback.format_exc()
-        print(f"❌ ERROR en get_reservas: {error_trace}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error al consultar reservas: {str(e)}"
-        )
+        print(f"❌ ERROR en ReservasGDS: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Error al consultar reservas: {str(e)}")
 
 
 

@@ -81,7 +81,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onR
           >
             <option value="">Trayectos (Todos)</option>
             <option value="IDA">Vuelos - Ida</option>
-            <option value="REG">Vuelos - Devuelta</option>
+            <option value="REG">Vuelos - Regreso</option>
           </select>
         </div>
 
