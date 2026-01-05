@@ -474,7 +474,7 @@ function App() {
                 <RefreshCw className="w-5 h-5" />
               </button>
 
-              {userRole.toLowerCase() === 'administrador' && (
+              {userRole.toLowerCase() !== 'usuario' && (
                 <button
                   onClick={() => window.open('http://localhost:8501', '_blank')}
                   className="flex items-center gap-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
@@ -508,7 +508,7 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {userRole.toLowerCase() === 'administrador' && <StatsCards tiquetes={tiquetes} />}
+        <StatsCards tiquetes={tiquetes} />
 
         <FilterPanel
           filters={filters}
@@ -526,23 +526,23 @@ function App() {
               Última actualización: {new Date().toLocaleTimeString()}
             </p>
 
-            {userRole.toLowerCase() === 'administrador' && (
-              <>
-                <button
-                  onClick={exportToExcel}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition-all"
-                >
-                  Exportar Excel
-                </button>
 
-                <button
-                  onClick={() => setOpenModal(true)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"
-                >
-                  Adicionar Pasajero
-                </button>
-              </>
-            )}
+            <>
+              <button
+                onClick={exportToExcel}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition-all"
+              >
+                Exportar Excel
+              </button>
+
+              <button
+                onClick={() => setOpenModal(true)}
+                className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg shadow-md transition-all"
+              >
+                Adicionar Pasajero
+              </button>
+            </>
+
 
             <AdicionarPasajeroModal
               isOpen={openModal}
@@ -659,7 +659,6 @@ function App() {
                       <span className="text-sm text-gray-600">Atención:</span>
                       <button
                         onClick={async (e) => {
-                          if (userRole.toLowerCase() !== 'administrador') return;
                           e.preventDefault(); // Evitar cualquier comportamiento por defecto
 
                           if (!selectedTiquete) return;
@@ -702,13 +701,12 @@ function App() {
                             alert(`Error al cambiar tipo de atención: ${error instanceof Error ? error.message : 'Error desconocido'}`);
                           }
                         }}
-                        disabled={userRole.toLowerCase() !== 'administrador'}
                         className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${(selectedTiquete.id_atencion || 'Presencial') === 'Presencial'
-                            ? 'bg-cyan-500 text-white ' + (userRole.toLowerCase() === 'administrador' ? 'hover:bg-cyan-600' : 'opacity-80')
-                            : 'bg-pink-500 text-white ' + (userRole.toLowerCase() === 'administrador' ? 'hover:bg-pink-600' : 'opacity-80')
+                          ? 'bg-cyan-500 text-white hover:bg-cyan-600'
+                          : 'bg-pink-500 text-white hover:bg-pink-600'
                           }`}
                       >
-                        {selectedTiquete.id_atencion || 'Presencial'} {userRole.toLowerCase() === 'administrador' ? '⇄' : ''}
+                        {selectedTiquete.id_atencion || 'Presencial'} ⇄
                       </button>
                     </div>
                   </div>
@@ -753,7 +751,6 @@ function App() {
                       <select
                         value={selectedTiquete.id_asesor || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_asesor: e.target.value })}
-                        disabled={userRole.toLowerCase() !== 'administrador'}
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Seleccionar asesor...</option>
@@ -769,7 +766,6 @@ function App() {
                       <textarea
                         value={selectedTiquete.id_observacion || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_observacion: e.target.value })}
-                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese observación"
                         rows={3}
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -784,7 +780,6 @@ function App() {
                         type="text"
                         value={selectedTiquete.id_silla || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_silla: e.target.value })}
-                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese número de silla"
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
@@ -796,7 +791,6 @@ function App() {
                         type="text"
                         value={selectedTiquete.id_cuenta || ''}
                         onChange={(e) => setSelectedTiquete({ ...selectedTiquete, id_cuenta: e.target.value })}
-                        disabled={userRole.toLowerCase() !== 'administrador'}
                         placeholder="Ingrese cuenta"
                         className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
